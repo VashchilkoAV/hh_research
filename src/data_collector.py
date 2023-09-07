@@ -117,15 +117,15 @@ class DataCollector:
         # Create pages tuple
         return (
             vacancy_id,
-            vacancy["employer"]["name"],
-            vacancy["name"],
+            vacancy["employer"]["name"] if "employer" in vacancy else None,
+            vacancy["name"] if "name" in vacancy else None,
             salary is not None,
             from_to["from"],
             from_to["to"],
-            vacancy["experience"]["name"],
-            vacancy["schedule"]["name"],
-            [el["name"] for el in vacancy["key_skills"]],
-            self.clean_tags(vacancy["description"]),
+            vacancy["experience"]["name"] if "experience" in vacancy else None,
+            vacancy["schedule"]["name"] if "schedule" in vacancy else None,
+            [el["name"] for el in vacancy["key_skills"]] if "key_skills" in vacancy else [],
+            self.clean_tags(vacancy["description"]) if "description" in vacancy else "",
         )
 
     @staticmethod
@@ -195,7 +195,8 @@ class DataCollector:
                 ncols=100,
                 total=len(ids),
             ):
-                jobs_list.append(vacancy)
+                if vacancy[1] is not None:
+                    jobs_list.append(vacancy)
 
         unzipped_list = list(zip(*jobs_list))
 
